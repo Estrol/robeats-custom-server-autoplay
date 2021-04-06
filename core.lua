@@ -138,3 +138,5 @@ function Autoplay:new(__game, _game_slot)
 	self:cons()
 	return self
 end
+
+return Autoplay
