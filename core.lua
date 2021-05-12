@@ -8,6 +8,16 @@ local Autoplay = {}
 -- blame AstralKingdoms for asking me to test autoplay in RCS Rewrite
 local RCS_RblxID = {6765144361}
 
+local function has_value (tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
+
+    return false
+end
+
 function Autoplay:new(__game, _game_slot)
 	print(typeof(_game) == "table")
 	print(typeof(_game_slot) == "number")
@@ -36,7 +46,9 @@ function Autoplay:new(__game, _game_slot)
 				local time_to_end = _game._audio_manager:get_current_time_ms() - itr_note:get_hit_time()
 				
 				if itr_note.ClassName == "SingleNote" and (0.5 >- time_to_end and time_to_end >= -0.5) and self:accept_note_result(did_hit, note_result) or itr_note.ClassName == "HeldNote" and self:accept_note_result(did_hit, note_result) then
-					game:GetService("UserInputService").MouseIconEnabled = false 
+					if not has_value(RCS_RblxID, game.PlaceId) then
+						game:GetService("UserInputService").MouseIconEnabled = false
+					end
 					parent_tracksystem:press_track_index(itr_note_track)
 					
 					if itr_note.ClassName == "HeldNote" then
@@ -84,7 +96,7 @@ function Autoplay:new(__game, _game_slot)
 
 			else
 				DebugOut:warnf("AutoPlayer slot(%d) testing hit note for nonexistant player",0)
-                if has_value(RCS_RblxID, game.GameId) then
+                if has_value(RCS_RblxID, game.PlaceId) then
                     return NoteResult.Marvelous
                 end
 
@@ -111,7 +123,7 @@ function Autoplay:new(__game, _game_slot)
 	end
 	
 	function self:randomized_accept_note(did_hit, note_result)
-        if has_value(RCS_RblxID, game.GameId) then
+        if has_value(RCS_RblxID, game.PlaceId) then
             local rtv = false
             if __randomized_accept_rand == 0 then
                 rtv = false
@@ -169,16 +181,6 @@ function Autoplay:new(__game, _game_slot)
 	
 	self:cons()
 	return self
-end
-
-local function has_value (tab, val)
-    for index, value in ipairs(tab) do
-        if value == val then
-            return true
-        end
-    end
-
-    return false
 end
 
 return Autoplay
